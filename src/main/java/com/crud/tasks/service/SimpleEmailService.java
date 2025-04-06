@@ -30,7 +30,24 @@ public class SimpleEmailService {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(mail.getMailTo());
         mailMessage.setSubject(mail.getSubject());
-        mailMessage.setText(mail.getMessage());
+        mailMessage.setText(adjustTaskMessage(mail.getMessage()));
         return mailMessage;
+    }
+
+    private String adjustTaskMessage(String message) {
+
+        int taskCount = extractTaskCountFromMessage(message);
+        String taskLabel = (taskCount == 1) ? "task" : "tasks";
+        return message.replace("tasks", taskLabel);
+    }
+
+    private int extractTaskCountFromMessage(String message) {
+        try {
+            String[] parts = message.split(" ");
+            return Integer.parseInt(parts[parts.length - 2]);
+        } catch (Exception e) {
+            log.error("Failed to extract task count from message.", e);
+            return 0;
+        }
     }
 }
