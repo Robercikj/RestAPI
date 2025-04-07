@@ -31,7 +31,13 @@ public class SimpleEmailService {
         mailMessage.setTo(mail.getMailTo());
         mailMessage.setSubject(mail.getSubject());
         mailMessage.setText(adjustTaskMessage(mail.getMessage()));
-        mail.getToCc().ifPresent(mailMessage::setCc);
+
+        mail.getToCc().ifPresent(cc -> {
+            if (!cc.trim().isEmpty()) {
+                mailMessage.setCc(cc);
+            }
+        });
+
         return mailMessage;
     }
 
